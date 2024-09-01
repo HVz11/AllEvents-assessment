@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap");
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Space Grotesk";
+  background-color: #111111;
+  color: white;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.search-container {
+  margin: 20px auto;
+  max-width: 600px;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  font-size: 1rem;
+  color: white;
+  background-color: #222;
+}
+
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.suggestion-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.suggestion-button {
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.suggestion-button:hover {
+  background-color: #555;
+}
+
+.artist-info {
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+  justify-content: center;
+  gap: 20px;
+}
+
+.artist-image {
+  width: 300px;
+  height: 300px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.artist-details {
+  text-align: left;
+}
+
+.artist-details h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.artist-details p {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+.artist-details h2 {
+  font-weight: 500;
+}
+
+.suggestion-button {
+  font-weight: 400;
+}
