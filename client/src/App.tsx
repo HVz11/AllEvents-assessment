@@ -1,44 +1,68 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './App.css';
 
 const App: React.FC = () => {
-  const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
+  const [query, setQuery] = useState<string>('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [artistData, setArtistData] = useState<{
+    name: string;
+    genre: string;
+    location: string;
+    imageUrl: string;
+  } | null>(null);
 
-  const suggestions = [
-    'Drake',
-    'Taylor Swift',
-    'Ed Sheeran',
-    'Beyonce',
-    'Post Malone',
-    'Nicki Minaj',
-    'Kanye West',
-    'Ariana Grande',
-  ];
+  const fetchSuggestions = async () => {
+    if (query.trim() === '') {
+      setSuggestions([]);
+      setArtistData(null);
+      return;
+    }
 
-  const artistData = {
-    name: 'Post Malone',
-    genre: 'Hip-Hop, POP',
-    location: 'USA',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Post_Malone_July_2021_%28cropped%29.jpg',
+    try {
+      const response = await axios.get(`http://localhost:5000/api/artists/search?q=${query}`);
+      setSuggestions(response.data.map((artist: { name: string }) => artist.name));
+      if (response.data.length > 0) {
+        const firstArtist = response.data[0];
+        setArtistData({
+          name: firstArtist.name,
+          genre: firstArtist.genre,
+          location: firstArtist.location,
+          imageUrl: firstArtist.profilePhoto,
+        });
+      } else {
+        setArtistData(null);
+      }
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchSuggestions();
   };
 
   return (
     <div className="container">
-      <h1>Find your favourite Music Artist</h1>
-      <div className="search-container">
+      <h1>Find Your Favorite Music Artist</h1>
+      <form onSubmit={handleSubmit} className="search-container">
         <input
           type="text"
-          placeholder="Search artists..."
+          placeholder="Search for artists..."
           className="search-input"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
         />
-      </div>
+        <button type="submit" className="submit-button">Search</button>
+      </form>
       <div className="suggestions">
         <h3>Suggestions</h3>
         <div className="suggestion-buttons">
           {suggestions.map((artist) => (
             <button
               key={artist}
-              onClick={() => setSelectedArtist(artist)}
+              onClick={() => setQuery(artist)}
               className="suggestion-button"
             >
               {artist}
@@ -46,7 +70,7 @@ const App: React.FC = () => {
           ))}
         </div>
       </div>
-      {selectedArtist && (
+      {artistData && (
         <div className="artist-info">
           <img
             src={artistData.imageUrl}

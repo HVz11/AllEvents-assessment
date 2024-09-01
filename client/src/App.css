@@ -26,19 +26,37 @@ h1 {
 }
 
 .search-container {
+  display: flex;
   margin: 20px auto;
   max-width: 600px;
   width: 100%;
 }
 
 .search-input {
-  width: 100%;
+  width: 85%;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 8px 8px 8px 8px;
   border: 1px solid #333;
   font-size: 1rem;
-  color: white;
+  color: #f3f3f3;
   background-color: #222;
+  margin-right: 10px;
+}
+
+.submit-button {
+  width: 15%;
+  padding: 10px 15px;
+  border-radius: 8px 8px 8px 8px;
+  border: 1px solid #333;
+  font-size: 1rem;
+  color: #111111;
+  background-color: #f3f3f3;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #e0e0e0;
 }
 
 .suggestions {
