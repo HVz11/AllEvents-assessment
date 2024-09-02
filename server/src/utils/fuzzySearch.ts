@@ -6,7 +6,7 @@ export const fuzzySearch = (query: string, artists: IArtist[]): IArtist[] => {
   const options: IFuseOptions<IArtist> = {
     keys: ["name"],
     includeScore: true,
-    threshold: 0.5,
+    threshold: 0.3, //For better Precision
     distance: 100,
     includeMatches: true,
     useExtendedSearch: true,
