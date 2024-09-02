@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
 import './App.css';
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 // Lazy load the ArtistInfo component
 const ArtistInfo = React.lazy(() => import('./ArtistInfo'));
@@ -72,6 +73,7 @@ const App: React.FC = () => {
 
   return (
     <div className="container">
+    <SpeedInsights />
       <h1 className={artistData ? 'fixed' : ''}>Find Your Favorite Music Artist</h1>
       <form onSubmit={handleSearchSubmit} className="search-container">
         <input
