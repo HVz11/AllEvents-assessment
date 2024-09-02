@@ -1,0 +1,22 @@
+# Dockerfile.frontend
+
+# Use an official Node.js runtime as a parent image
+FROM node:18-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the package.json and package-lock.json files
+COPY package*.json ./
+
+# Install the frontend dependencies
+RUN npm install
+
+# Copy the rest of the frontend code
+COPY . .
+
+# Expose the frontend port
+EXPOSE 5173
+
+# Command to run the frontend application
+CMD ["npm", "run", "dev"]

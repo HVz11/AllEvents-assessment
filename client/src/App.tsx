@@ -28,7 +28,7 @@ const App: React.FC = () => {
 
   const fetchSuggestions = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/artists/search?q=${query}`);
+      const response = await axios.get(`${import.meta.env.SERVER_BASEURL}/search?q=${query}`);
       const artists = response.data;
 
       const matchedArtist = artists.find((artist: { name: string }) => artist.name.toLowerCase() === query.toLowerCase());
