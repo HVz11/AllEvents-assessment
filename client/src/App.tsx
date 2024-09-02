@@ -57,7 +57,7 @@ const App: React.FC = () => {
         <button type="submit" className="submit-button">Search</button>
       </form>
       <div className="suggestions">
-        <h3>Suggestions</h3>
+      <h3>Suggestions</h3>
         <div className="suggestion-buttons">
           {suggestions.map((artist) => (
             <button
