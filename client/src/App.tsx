@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
 import './App.css';
+
+// Lazy load the ArtistInfo component
+const ArtistInfo = React.lazy(() => import('./ArtistInfo'));
 
 const App: React.FC = () => {
   const [query, setQuery] = useState<string>('');
@@ -13,23 +16,23 @@ const App: React.FC = () => {
   } | null>(null);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 
-  const fetchSuggestions = async () => {
-    if (query.trim() === '') {
-      setSuggestions([]);
-      setArtistData(null);
-      setShowSuggestions(false);
-      return;
-    }
+  useEffect(() => {
+    const debounceFetchSuggestions = setTimeout(() => {
+      if (query.trim()) {
+        fetchSuggestions();
+      }
+    }, 200); 
+    return () => clearTimeout(debounceFetchSuggestions);
+  }, [query]);
 
+  const fetchSuggestions = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/artists/search?q=${query}`);
       const artists = response.data;
 
-      // Check if the query matches an artist's name exactly
       const matchedArtist = artists.find((artist: { name: string }) => artist.name.toLowerCase() === query.toLowerCase());
 
       if (matchedArtist) {
-        // If an exact match is found, show the artist details and hide suggestions
         setArtistData({
           name: matchedArtist.name,
           genre: matchedArtist.genre,
@@ -39,8 +42,7 @@ const App: React.FC = () => {
         setSuggestions([]);
         setShowSuggestions(false);
       } else {
-        // If no exact match, show suggestions and clear artist details
-        setSuggestions(artists.map((artist: { name: string }) => artist.name));
+        setSuggestions(artists.slice(0, 5).map((artist: { name: string }) => artist.name));
         setArtistData(null);
         setShowSuggestions(true);
       }
@@ -49,22 +51,21 @@ const App: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSuggestionClick = (artistName: string) => {
+    setQuery(artistName);
+    setShowSuggestions(false);
     fetchSuggestions();
   };
 
-  const handleSuggestionClick = (artistName: string) => {
-    // Set the query to the selected suggestion and fetch artist details
-    setQuery(artistName);
-    setShowSuggestions(false); // Hide suggestions after selection
-    fetchSuggestions(); // Fetch details for the selected artist
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchSuggestions(); 
   };
 
   return (
     <div className="container">
       <h1>Find Your Favorite Music Artist</h1>
-      <form onSubmit={handleSubmit} className="search-container">
+      <form onSubmit={handleSearchSubmit} className="search-container">
         <input
           type="text"
           placeholder="Search for artists..."
@@ -75,7 +76,6 @@ const App: React.FC = () => {
         <button type="submit" className="submit-button">Search</button>
       </form>
 
-      {/* Render the suggestions only if showSuggestions is true */}
       {showSuggestions && (
         <div className="suggestions">
           <h3>Suggestions</h3>
@@ -94,18 +94,9 @@ const App: React.FC = () => {
       )}
 
       {artistData && (
-        <div className="artist-info">
-          <img
-            src={artistData.imageUrl}
-            alt={artistData.name}
-            className="artist-image"
-          />
-          <div className="artist-details">
-            <h2>{artistData.name}</h2>
-            <p>{artistData.genre}</p>
-            <p>{artistData.location}</p>
-          </div>
-        </div>
+        <Suspense fallback={<div>Loading artist details...</div>}>
+          <ArtistInfo data={artistData} />
+        </Suspense>
       )}
     </div>
   );
