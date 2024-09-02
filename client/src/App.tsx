@@ -21,7 +21,8 @@ const App: React.FC = () => {
       if (query.trim()) {
         fetchSuggestions();
       }
-    }, 200); 
+    }, 200);
+
     return () => clearTimeout(debounceFetchSuggestions);
   }, [query]);
 
@@ -59,12 +60,19 @@ const App: React.FC = () => {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchSuggestions(); 
+    fetchSuggestions();
+  };
+
+  const handleBackClick = () => {
+    setQuery('');
+    setArtistData(null);
+    setSuggestions([]);
+    setShowSuggestions(false);
   };
 
   return (
     <div className="container">
-      <h1>Find Your Favorite Music Artist</h1>
+      <h1 className={artistData ? 'fixed' : ''}>Find Your Favorite Music Artist</h1>
       <form onSubmit={handleSearchSubmit} className="search-container">
         <input
           type="text"
@@ -72,8 +80,17 @@ const App: React.FC = () => {
           className="search-input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          disabled={artistData !== null}
         />
-        <button type="submit" className="submit-button">Search</button>
+        {artistData ? (
+          <button type="button" className="submit-button" onClick={handleBackClick}>
+            Back
+          </button>
+        ) : (
+          <button type="submit" className="submit-button">
+            Search
+          </button>
+        )}
       </form>
 
       {showSuggestions && (

@@ -41,6 +41,7 @@ h1 {
   color: #f3f3f3;
   background-color: #222;
   margin-right: 10px;
+  font-weight: 400;
 }
 
 .submit-button {
@@ -53,6 +54,7 @@ h1 {
   background-color: #f3f3f3;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-weight: 600;
 }
 
 .submit-button:hover {
