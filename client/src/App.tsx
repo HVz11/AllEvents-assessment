@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, useCallback } from 'react';
+import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import './App.css';
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -15,8 +15,10 @@ const App: React.FC = () => {
     imageUrl: string;
   } | null>(null);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchSuggestions = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_BASEURL}/search?q=${query}`);
       const artists = response.data;
@@ -39,6 +41,8 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching suggestions:', error);
+    } finally {
+      setLoading(false);
     }
   }, [query]);
 
@@ -47,7 +51,7 @@ const App: React.FC = () => {
       if (query.trim()) {
         fetchSuggestions();
       }
-    }, 200);
+    }, 300);
 
     return () => clearTimeout(debounceFetchSuggestions);
   }, [query, fetchSuggestions]);
@@ -70,6 +74,18 @@ const App: React.FC = () => {
     setShowSuggestions(false);
   }, []);
 
+  const suggestionButtons = useMemo(() => {
+    return suggestions.map((artist) => (
+      <button
+        key={artist}
+        onClick={() => handleSuggestionClick(artist)}
+        className="suggestion-button"
+      >
+        {artist}
+      </button>
+    ));
+  }, [suggestions, handleSuggestionClick]);
+
   return (
     <div className="container">
       <h1 className={artistData ? 'fixed' : ''}>Find Your Favorite Music Artist</h1>
@@ -80,7 +96,6 @@ const App: React.FC = () => {
           className="search-input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-        // disabled={artistData !== null}
         />
         {artistData ? (
           <button type="button" className="submit-button" onClick={handleBackClick}>
@@ -93,19 +108,13 @@ const App: React.FC = () => {
         )}
       </form>
 
-      {showSuggestions && (
+      {loading && <div className="loader">Loading...</div>}
+
+      {showSuggestions && !loading && (
         <div className="suggestions">
           <h3>Suggestions</h3>
           <div className="suggestion-buttons">
-            {suggestions.map((artist) => (
-              <button
-                key={artist}
-                onClick={() => handleSuggestionClick(artist)}
-                className="suggestion-button"
-              >
-                {artist}
-              </button>
-            ))}
+            {suggestionButtons}
           </div>
         </div>
       )}
@@ -115,6 +124,7 @@ const App: React.FC = () => {
           <ArtistInfo data={artistData} />
         </Suspense>
       )}
+
       <SpeedInsights />
     </div>
   );
