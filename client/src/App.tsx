@@ -1,9 +1,8 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useCallback } from 'react';
 import axios from 'axios';
 import './App.css';
-import { SpeedInsights } from "@vercel/speed-insights/react"
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
-// Lazy load the ArtistInfo component
 const ArtistInfo = React.lazy(() => import('./ArtistInfo'));
 
 const App: React.FC = () => {
@@ -17,17 +16,7 @@ const App: React.FC = () => {
   } | null>(null);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 
-  useEffect(() => {
-    const debounceFetchSuggestions = setTimeout(() => {
-      if (query.trim()) {
-        fetchSuggestions();
-      }
-    }, 200);
-
-    return () => clearTimeout(debounceFetchSuggestions);
-  }, [query]);
-
-  const fetchSuggestions = async () => {
+  const fetchSuggestions = useCallback(async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_BASEURL}/search?q=${query}`);
       const artists = response.data;
@@ -51,29 +40,38 @@ const App: React.FC = () => {
     } catch (error) {
       console.error('Error fetching suggestions:', error);
     }
-  };
+  }, [query]);
 
-  const handleSuggestionClick = (artistName: string) => {
+  useEffect(() => {
+    const debounceFetchSuggestions = setTimeout(() => {
+      if (query.trim()) {
+        fetchSuggestions();
+      }
+    }, 200);
+
+    return () => clearTimeout(debounceFetchSuggestions);
+  }, [query, fetchSuggestions]);
+
+  const handleSuggestionClick = useCallback((artistName: string) => {
     setQuery(artistName);
     setShowSuggestions(false);
     fetchSuggestions();
-  };
+  }, [fetchSuggestions]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     fetchSuggestions();
-  };
+  }, [fetchSuggestions]);
 
-  const handleBackClick = () => {
+  const handleBackClick = useCallback(() => {
     setQuery('');
     setArtistData(null);
     setSuggestions([]);
     setShowSuggestions(false);
-  };
+  }, []);
 
   return (
     <div className="container">
-    <SpeedInsights />
       <h1 className={artistData ? 'fixed' : ''}>Find Your Favorite Music Artist</h1>
       <form onSubmit={handleSearchSubmit} className="search-container">
         <input
@@ -82,7 +80,7 @@ const App: React.FC = () => {
           className="search-input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          disabled={artistData !== null}
+        // disabled={artistData !== null}
         />
         {artistData ? (
           <button type="button" className="submit-button" onClick={handleBackClick}>
@@ -117,6 +115,7 @@ const App: React.FC = () => {
           <ArtistInfo data={artistData} />
         </Suspense>
       )}
+      <SpeedInsights />
     </div>
   );
 };
