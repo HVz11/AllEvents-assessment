@@ -1,19 +1,34 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-export interface IArtist extends Document {
+interface ArtistAttrs {
   name: string;
-  profilePhoto: string;
   genre: string;
   location: string;
+  imageUrl: string;
 }
 
-const artistSchema: Schema = new Schema({
+interface ArtistDoc extends mongoose.Document {
+  name: string;
+  genre: string;
+  location: string;
+  imageUrl: string;
+}
+
+interface ArtistModel extends mongoose.Model<ArtistDoc> {
+  build(attrs: ArtistAttrs): ArtistDoc;
+}
+
+const artistSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  profilePhoto: { type: String, required: true },
   genre: { type: String, required: true },
   location: { type: String, required: true },
+  imageUrl: { type: String, required: true },
 });
 
-const Artist = mongoose.model<IArtist>("Artist", artistSchema);
+artistSchema.statics.build = (attrs: ArtistAttrs) => {
+  return new Artist(attrs);
+};
 
-export default Artist;
+const Artist = mongoose.model<ArtistDoc, ArtistModel>("Artist", artistSchema);
+
+export { Artist };

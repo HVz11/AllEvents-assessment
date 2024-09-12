@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import artistRoutes from "./routes/artistRoutes";
+import { artistRouter } from "./routes/artistRoutes";
 import dotenv from "dotenv";
 import cors from "cors";
 import { errorHandler } from "./errorHandler";
@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(errorHandler);
-app.use("/api/artists", artistRoutes);
+app.use("/api/artists", artistRouter);
 
 const PORT = process.env.PORT || 5000;
 
