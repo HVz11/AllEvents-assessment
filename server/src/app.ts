@@ -33,9 +33,8 @@ client.connect()
       console.error('Redis connection error:', err);
   });
 
-client.on('error', (err) => {
-  console.error('Redis Client Error:', err);
-});
+client.on("error", (err: Error) => console.error("Redis Client Error", err));
+
 
 const connectDB = async () => {
   try {
