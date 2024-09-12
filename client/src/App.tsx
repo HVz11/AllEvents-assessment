@@ -32,7 +32,7 @@ const App: React.FC = () => {
       const artists = response.data;
 
       setSuggestions(artists.slice(0, 5));
-      setShowSuggestions(!artistData); // Hide suggestions if artist data is present
+      setShowSuggestions(!artistData);
     } catch (error) {
       console.error('Error fetching suggestions:', error);
       setSuggestions([]);

@@ -140,9 +140,8 @@ h1 {
   color: #f3f3f3;
 }
 
-/* New styles to prevent layout shift */
 .search-container {
-  min-height: 30px; /* Adjust based on your input height */
+  min-height: 30px; 
 }
 
 .input-wrapper {
@@ -151,5 +150,5 @@ h1 {
 
 .dropdown {
   position: absolute;
-  top: calc(100% + 1px); /* Adjust if needed */
+  top: calc(100% + 1px); 
 }
