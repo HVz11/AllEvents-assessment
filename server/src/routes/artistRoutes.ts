@@ -16,13 +16,24 @@ router.get("/search", async (req: Request, res: Response) => {
     const artists = await Artist.aggregate([
       {
         $search: {
-          index: "artist_search_index",
+          index: "default",
           compound: {
             should: [
               {
                 text: {
                   query: query,
                   path: "name",
+                  score: { boost: { value: 10 } },
+                },
+              },
+              {
+                text: {
+                  query: query,
+                  path: "name",
+                  fuzzy: {
+                    maxEdits: 1,
+                    prefixLength: 1,
+                  },
                   score: { boost: { value: 5 } },
                 },
               },
@@ -46,7 +57,7 @@ router.get("/search", async (req: Request, res: Response) => {
           exactMatch: {
             $cond: {
               if: { $eq: [{ $toLower: "$name" }, query.toLowerCase()] },
-              then: 1,
+              then: 2,
               else: 0,
             },
           },
