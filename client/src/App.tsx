@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [artistData, setArtistData] = useState<Artist | null>(null);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [artistDetailsLoading, setArtistDetailsLoading] = useState<boolean>(false);
 
   const fetchSuggestions = useCallback(async () => {
     if (!query.trim()) {
@@ -31,7 +32,7 @@ const App: React.FC = () => {
       const response = await axios.get(`http://localhost:5000/api/artists/search?query=${encodeURIComponent(query)}`);
       const artists = response.data;
 
-      setSuggestions(artists.slice(0, 5));
+      setSuggestions(artists.slice(0, 8));
       setShowSuggestions(!artistData);
     } catch (error) {
       console.error('Error fetching suggestions:', error);
@@ -49,10 +50,18 @@ const App: React.FC = () => {
     return () => clearTimeout(debounceFetchSuggestions);
   }, [query, fetchSuggestions]);
 
-  const handleSuggestionClick = useCallback((artist: Artist) => {
+  const handleSuggestionClick = useCallback(async (artist: Artist) => {
     setQuery(artist.name);
-    setArtistData(artist);
     setShowSuggestions(false);
+    setArtistDetailsLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setArtistData(artist);
+    } catch (error) {
+      console.error('Error fetching artist details:', error);
+    } finally {
+      setArtistDetailsLoading(false);
+    }
   }, []);
 
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
@@ -72,45 +81,49 @@ const App: React.FC = () => {
   return (
     <div className="container">
       <h1 className={artistData ? 'fixed' : ''}>Find Your Favorite Music Artist</h1>
-      <form onSubmit={handleSearchSubmit} className="search-container">
-        <div className="input-wrapper">
-          <input
-            type="text"
-            placeholder="Search for artists..."
-            className="search-input"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => !artistData && setShowSuggestions(true)}
-          />
-          {showSuggestions && suggestions.length > 0 && !artistData && (
-            <div className="dropdown">
-              {suggestions.map((artist) => (
-                <div
-                  key={artist.name}
-                  className="dropdown-item"
-                  onClick={() => handleSuggestionClick(artist)}
-                >
-                  {artist.name}
-                </div>
-              ))}
-            </div>
+      <div className="search-wrapper">
+        <form onSubmit={handleSearchSubmit} className="search-container">
+          <div className="input-wrapper">
+            <input
+              type="text"
+              placeholder="Search for artists..."
+              className="search-input"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => !artistData && setShowSuggestions(true)}
+            />
+            {showSuggestions && suggestions.length > 0 && !artistData && (
+              <div className="dropdown">
+                {suggestions.map((artist) => (
+                  <div
+                    key={artist.name}
+                    className="dropdown-item"
+                    onClick={() => handleSuggestionClick(artist)}
+                  >
+                    {artist.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {artistData ? (
+            <button type="button" className="submit-button" onClick={handleBackClick}>
+              Back
+            </button>
+          ) : (
+            <button type="submit" className="submit-button">
+              Search
+            </button>
           )}
-        </div>
-        {artistData ? (
-          <button type="button" className="submit-button" onClick={handleBackClick}>
-            Back
-          </button>
-        ) : (
-          <button type="submit" className="submit-button">
-            Search
-          </button>
-        )}
-      </form>
+        </form>
+      </div>
 
-      {loading && <div className="loader">Loading...</div>}
+      {loading && <div className="loader">Loading suggestions...</div>}
 
-      {artistData && (
-        <Suspense fallback={<div>Loading artist details...</div>}>
+      {artistDetailsLoading && <div className="loader">Loading artist details...</div>}
+
+      {artistData && !artistDetailsLoading && (
+        <Suspense fallback={<div className="loader">Loading artist details...</div>}>
           <ArtistInfo data={artistData} />
         </Suspense>
       )}

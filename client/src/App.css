@@ -13,34 +13,42 @@ html {
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 110px 20px;
   box-sizing: border-box;
 }
 
 h1 {
   font-size: 2rem;
-  margin-bottom: 20px;
+  margin-top: 0;
+  margin-bottom: 15px;
   font-weight: 700;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .search-container {
   display: flex;
-  margin: 20px auto;
-  max-width: 600px;
+  margin: 15px auto;
   width: 100%;
 }
 
 .input-wrapper {
   position: relative;
   width: 85%;
+  height: 100%;
 }
 
 .search-input {
   width: 100%;
-  padding: 10px 15px;
+  padding: 10px 10px;
   border-radius: 8px;
   border: 1px solid #333;
   font-size: 1rem;
@@ -60,7 +68,7 @@ h1 {
   cursor: pointer;
   transition: background-color 0.3s;
   font-weight: 600;
-  margin-left: 50px;
+  margin-left: 35px;
 }
 
 .submit-button:hover {
@@ -71,13 +79,11 @@ h1 {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 106.5%;
+  width: 104%;
   background-color: #222;
   border: 1px solid #333;
   border-top: none;
-  border-radius: 4px 4px 8px 8px;
-  max-height: 200px;
-  overflow-y: auto;
+  border-radius: 0 0 8px 8px;
   z-index: 1000;
 }
 
@@ -95,7 +101,7 @@ h1 {
   position: relative;
   display: flex;
   align-items: center;
-  margin-top: 40px;
+  margin-top: 20px;
   text-align: center;
 }
 
@@ -105,6 +111,15 @@ h1 {
   border-radius: 15px;
   object-fit: cover;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.artist-image.loading {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.artist-image.loaded {
+  opacity: 1;
 }
 
 .artist-details {
@@ -135,20 +150,10 @@ h1 {
 }
 
 .loader {
-  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
   font-size: 1rem;
   color: #f3f3f3;
-}
-
-.search-container {
-  min-height: 30px; 
-}
-
-.input-wrapper {
-  height: 100%;
-}
-
-.dropdown {
-  position: absolute;
-  top: calc(100% + 1px); 
 }
