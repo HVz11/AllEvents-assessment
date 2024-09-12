@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { Artist } from "../models/artist";
+import { redisClient } from "../app";
 
 const router = express.Router();
 
@@ -13,6 +14,15 @@ router.get("/search", async (req: Request, res: Response) => {
   }
 
   try {
+    const cacheKey = `artists:${query.toLowerCase()}`;
+
+    const cachedArtists = await redisClient.get(cacheKey);
+    if (cachedArtists) {
+      console.log(`Cache hit for query: ${query}`);
+      return res.send(JSON.parse(cachedArtists));
+    }
+    console.log(`Cache miss for query: ${query}. Fetching from MongoDB.`);
+
     const artists = await Artist.aggregate([
       {
         $search: {
@@ -83,6 +93,10 @@ router.get("/search", async (req: Request, res: Response) => {
         $limit: 10,
       },
     ]);
+
+    await redisClient.set(cacheKey, JSON.stringify(artists), {
+      EX: 86400,
+    });
 
     res.send(artists);
   } catch (error) {

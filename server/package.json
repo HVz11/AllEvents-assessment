@@ -17,7 +17,8 @@
     "express": "^4.19.2",
     "fuse.js": "^7.0.0",
     "fuzzysort": "^3.0.2",
-    "mongoose": "^8.6.0"
+    "mongoose": "^8.6.0",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
