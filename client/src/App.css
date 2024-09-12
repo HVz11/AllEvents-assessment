@@ -5,7 +5,7 @@ html {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: "Space Grotesk";
+  font-family: "Space Grotesk", sans-serif;
   background-color: #111111;
   color: white;
 }
@@ -23,6 +23,7 @@ html {
 h1 {
   font-size: 2rem;
   margin-bottom: 20px;
+  font-weight: 700;
 }
 
 .search-container {
@@ -32,22 +33,26 @@ h1 {
   width: 100%;
 }
 
-.search-input {
+.input-wrapper {
+  position: relative;
   width: 85%;
+}
+
+.search-input {
+  width: 100%;
   padding: 10px 15px;
-  border-radius: 8px 8px 8px 8px;
+  border-radius: 8px;
   border: 1px solid #333;
   font-size: 1rem;
   color: #f3f3f3;
   background-color: #222;
-  margin-right: 10px;
   font-weight: 400;
 }
 
 .submit-button {
   width: 15%;
   padding: 10px 15px;
-  border-radius: 8px 8px 8px 8px;
+  border-radius: 8px;
   border: 1px solid #333;
   font-size: 1rem;
   color: #111111;
@@ -55,88 +60,96 @@ h1 {
   cursor: pointer;
   transition: background-color 0.3s;
   font-weight: 600;
+  margin-left: 50px;
 }
 
 .submit-button:hover {
   background-color: #e0e0e0;
 }
 
-.suggestions {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 106.5%;
+  background-color: #222;
+  border: 1px solid #333;
+  border-top: none;
+  border-radius: 4px 4px 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
 }
 
-.suggestion-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.suggestion-button {
-  padding: 10px 20px;
-  border-radius: 20px;
-  background-color: #333;
-  color: white;
-  border: none;
+.dropdown-item {
+  padding: 10px 15px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.suggestion-button:hover {
-  background-color: #555;
+.dropdown-item:hover {
+  background-color: #333;
 }
 
 .artist-info {
-  position: relative; 
+  position: relative;
   display: flex;
   align-items: center;
   margin-top: 40px;
-  text-align: center; 
+  text-align: center;
 }
 
 .artist-image {
-  width: 850px; 
-  height: 500px; 
+  width: 1000px;
+  height: 550px;
   border-radius: 15px;
   object-fit: cover;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .artist-details {
-  position: absolute; 
-  bottom: 0; 
-  left: 0; 
-  padding: 10px; 
-  background: transparent; 
-  color: white; 
-  border-radius: 8px; 
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  background: transparent;
+  color: white;
+  border-radius: 8px;
 }
 
-
-.artist-details h2 {
-  font-size: 1.5rem; 
-  margin-bottom: 5px;
-  font-weight: 700; 
-}
-
+.artist-details h2,
 .artist-details p {
-  font-size: 1rem; 
-  margin: 0;
-}
-
-
-h1 {
-  font-weight: 700;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 .artist-details h2 {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
   font-weight: 500;
 }
 
-.suggestion-button {
-  font-weight: 400;
+.artist-details p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.loader {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #f3f3f3;
+}
+
+/* New styles to prevent layout shift */
+.search-container {
+  min-height: 30px; /* Adjust based on your input height */
+}
+
+.input-wrapper {
+  height: 100%;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 1px); /* Adjust if needed */
 }
