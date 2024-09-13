@@ -29,13 +29,25 @@ const App: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_BASEURL}/search?query=${query}`);
+      console.log(`Fetching from: ${import.meta.env.VITE_SERVER_BASEURL}/search?query=${encodeURIComponent(query)}`);
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_BASEURL}/search?query=${encodeURIComponent(query)}`, {
+        timeout: 5000, 
+      });
+      console.log('Response:', response);
       const artists = response.data;
 
       setSuggestions(artists.slice(0, 8));
       setShowSuggestions(!artistData);
     } catch (error) {
       console.error('Error fetching suggestions:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          headers: error.response?.headers,
+        });
+      }
       setSuggestions([]);
     } finally {
       setLoading(false);
