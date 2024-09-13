@@ -10,10 +10,12 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(errorHandler);
 app.use("/api/artists", artistRouter);
@@ -23,21 +25,21 @@ const PORT = process.env.PORT || 5000;
 const client = createClient({
   password: process.env.REDIS_PASSWORD,
   socket: {
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT)
-  }
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+  },
 });
 
-client.connect()
+client
+  .connect()
   .then(() => {
-      console.log('Connected to Redis');
+    console.log("Connected to Redis");
   })
   .catch((err) => {
-      console.error('Redis connection error:', err);
+    console.error("Redis connection error:", err);
   });
 
 client.on("error", (err: Error) => console.error("Redis Client Error", err));
-
 
 const connectDB = async () => {
   try {

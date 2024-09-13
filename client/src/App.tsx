@@ -29,8 +29,7 @@ const App: React.FC = () => {
 
     setLoading(true);
     try {
-      // const response = await axios.get(`http://localhost:5000/api/artists/search?query=${encodeURIComponent(query)}`);
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_BASEURL}/search?q=${query}`);
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_BASEURL}/search?query=${query}`);
       const artists = response.data;
 
       setSuggestions(artists.slice(0, 8));
